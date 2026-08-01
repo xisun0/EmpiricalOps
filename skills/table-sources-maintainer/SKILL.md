@@ -10,19 +10,16 @@ description: Maintain a research repo's figure/table source map from manuscript 
 Produce or update a source map that lets a future reader answer, for every manuscript figure/table: what draft asset is used, what LaTeX label refers to it, what repo file regenerates or explains it, who first introduced the paper-facing asset, and which open issues still track related work.
 
 Use `assets/TABLE_SOURCES.template.md` when creating a new file or when an existing source map needs normalization.
-Source maps should use front matter with `managed_by: table-sources-maintainer`, `maintainer_repo` and `maintainer_commit` fields for the skill version used to maintain the file, and protected fields matching this skill's confirmation rules.
+Source maps should use front matter with `managed_by: table-sources-maintainer`, a `maintainer_commit` link for the skill version used to maintain the file, and protected fields matching this skill's confirmation rules.
 Leave `maintainer_commit` empty until the maintainer skill is pinned to a committed revision.
 
 ## Front Matter
 
 - `managed_by` must be `table-sources-maintainer`.
-- `maintainer_repo` records the Git repository that owns the maintainer skill version.
-  Prefer the canonical GitHub HTTPS URL when available, for example `https://github.com/<owner>/<repo>`.
 - `maintainer_commit` records the Git commit for the maintainer skill version used in the latest maintenance pass.
+  Write it as a markdown link whose text is the short hash and whose URL points to the maintainer skill folder at the full commit hash, for example `[abcdef1](https://github.com/<owner>/<repo>/tree/<full_hash>/skills/table-sources-maintainer)`.
   This is the commit that defines the skill instructions, not the manuscript commit and not the source-map file commit.
-- Prefer a full commit hash for `maintainer_commit`; use a short hash only when the repo context makes it unambiguous.
-- If the skill is copied from a central operations repo, use the central skill repo commit when available.
-  Fill `maintainer_repo` with that central repo.
+- If the skill is copied from a central operations repo, link to that central repo's skill folder at the pinned commit.
   If the current skill has uncommitted edits or no pinned upstream commit, leave `maintainer_commit` empty and say so in the final response.
 - `protected_fields` must include fields that require human confirmation before changing.
 
@@ -48,8 +45,8 @@ Leave `maintainer_commit` empty until the maintainer skill is pinned to a commit
    Use it for ambiguity that affects interpretation or maintenance, such as unresolved generators, inlined/manual tables with unclear ownership, missing active labels, or source chains that look plausible but are not verified.
    Do not use it to duplicate every routine `TBD` cell.
 9. Keep `Notes` as the final section of the source map.
-10. Fill `maintainer_repo` with the repo that owns the maintainer skill version.
-    Fill `maintainer_commit` only when that skill version is pinned to a committed revision; otherwise leave it empty.
+10. Fill `maintainer_commit` only when the maintainer skill version is pinned to a committed revision.
+    Use a markdown link to the maintainer skill folder at that commit; otherwise leave it empty.
 11. Run `git diff --check -- <source-map-file>` after edits.
     Do not compile LaTeX unless manuscript LaTeX sources or assets changed.
 
@@ -153,4 +150,4 @@ When finishing a source-map update or audit, include the current `To Be Confirme
 If the section is empty, say that there are no current `To Be Confirmed` items.
 Keep the list concise, but do not omit items that remain in the source map.
 Also state whether `maintainer_commit` was filled or intentionally left empty.
-If filled, state which `maintainer_repo` it belongs to.
+If filled, state which repo and folder the link points to.

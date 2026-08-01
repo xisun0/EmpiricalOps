@@ -1,6 +1,5 @@
 ---
 managed_by: table-sources-maintainer
-maintainer_repo:
 maintainer_commit:
 protected_fields:
   - owner
