@@ -1,0 +1,4 @@
+interface:
+  display_name: "Table Sources Maintainer"
+  short_description: "Maintain manuscript figure and table source maps."
+  default_prompt: "Update the figure/table source map for the current manuscript, preserving source, label, draft asset, and owner conventions."
