@@ -1,0 +1,6 @@
+skills:
+  commit-messager:
+    path: skills/commit-messager
+    source_repo: git@github.com:xisun0/commit-messager.git
+    source_commit: accab791b9636e18671cabe57f2b987a2974b61c
+    import_method: vendor-copy

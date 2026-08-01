@@ -1,0 +1,4 @@
+interface:
+  display_name: "Commit Messager"
+  short_description: "Draft Angular-style commit messages"
+  default_prompt: "Use $commit-messager to draft an Angular-style commit message for the current Git changes."
