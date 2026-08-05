@@ -13,6 +13,12 @@ Use `assets/TABLE_SOURCES.template.md` when creating a new file or when an exist
 Source maps should use front matter with `managed_by: table-sources-maintainer`, a plain-URL `maintainer_commit` value for the skill version used to maintain the file, and protected fields matching this skill's confirmation rules.
 Leave `maintainer_commit` empty until the maintainer skill is pinned to a committed revision.
 
+## Canonical Source
+
+- Source of truth: `https://github.com/xisun0/EmpiricalOps/tree/main/skills/table-sources-maintainer`.
+- Repo-local copies may live under `.agents/skills/table-sources-maintainer`; before changing maintainer rules, check the source-of-truth repository above.
+- When filling `maintainer_commit` for a copied skill, use a pinned full-commit URL under the same EmpiricalOps skill path, not the downstream repo copy.
+
 ## Front Matter
 
 - `managed_by` must be `table-sources-maintainer`.
