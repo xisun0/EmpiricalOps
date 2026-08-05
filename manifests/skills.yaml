@@ -7,3 +7,6 @@ skills:
   table-sources-maintainer:
     path: skills/table-sources-maintainer
     import_method: native
+  consistency-auditor:
+    path: skills/consistency-auditor
+    import_method: native

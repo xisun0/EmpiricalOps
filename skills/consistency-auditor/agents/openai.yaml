@@ -1,0 +1,4 @@
+interface:
+  display_name: "Consistency Auditor"
+  short_description: "Audit empirical-paper substance and style consistency"
+  default_prompt: "Use $consistency-auditor to audit the active empirical manuscript against its source code, then report substantive and style-consistency findings."
