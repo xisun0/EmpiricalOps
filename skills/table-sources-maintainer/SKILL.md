@@ -34,6 +34,9 @@ Leave `maintainer_commit` empty until the maintainer skill is pinned to a commit
 
 1. Locate the active manuscript.
    Prefer the file named by the user. Otherwise inspect repo docs, the existing source map, recently edited manuscript files, and common manuscript directories such as `writing/`, `paper/`, `manuscript/`, or `draft/`.
+   Treat existing source-map `Draft:`, `Main source:`, and `Appendix source:` lines as the locked active-source mapping unless the user explicitly names a different source or repo documentation clearly marks another file as active.
+   Do not add, remove, split, or switch manuscript source files solely because another `.tex` file is newer, standalone, more complete, or contains additional tables/figures.
+   If a plausible alternative source is found, preserve the existing source mapping, record the ambiguity in `To Be Confirmed`, and ask for confirmation before remapping.
 2. Identify the git repo that owns the manuscript assets.
    If the manuscript directory is a submodule, run commit and history commands inside that submodule.
 3. Record the manuscript source at the top of the source map.
@@ -138,6 +141,7 @@ git -C <asset-repo-or-submodule> log --follow --diff-filter=A --format='%ad\t%an
 Before finishing:
 
 - Confirm every row has the required columns.
+- Confirm manuscript source mapping was not changed from existing `Draft:`, `Main source:`, or `Appendix source:` lines without explicit user direction, clear repo documentation, or a recorded confirmation.
 - Confirm every listed draft asset exists, or is explicitly marked as inlined.
 - Confirm draft-asset filenames were shortened only after checking duplicate basenames.
 - Confirm figure rows list core image assets, not wrapper tex files.
