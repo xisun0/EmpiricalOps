@@ -1,4 +1,4 @@
 interface:
   display_name: "Table Sources Maintainer"
-  short_description: "Maintain manuscript figure and table source maps."
-  default_prompt: "Update the figure/table source map for the current manuscript, preserving source, label, draft asset, and owner conventions."
+  short_description: "Reconcile manuscript artifacts with source maps"
+  default_prompt: "Use $table-sources-maintainer to rebuild the active manuscript artifact inventory, reconcile it bidirectionally with TABLE_SOURCES.md, and verify source paths, owners, and open issues."

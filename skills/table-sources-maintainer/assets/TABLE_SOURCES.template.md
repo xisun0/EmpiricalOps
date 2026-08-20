@@ -10,6 +10,9 @@ For quick reference, this file shows what figures and tables are in the manuscri
 
 Updated: **`<date>`**
 
+Reconciliation mode: `full-reconcile + update`. Coverage: `<main figures>`, `<main tables>`,
+`<appendix figures>`, and `<appendix tables>` from the active manuscript.
+
 Draft: [`<path/to/manuscript>.tex`](<remote-blob-url-for-manuscript-tex-at-full-hash>)
 at writing commit `<short_hash>`. This draft contains both main and appendix figures/tables.
 
@@ -38,7 +41,7 @@ single manuscript source above with:
 
 ## To Be Confirmed
 
-- `<artifact>`: `<specific uncertainty or follow-up that needs human review>`.
+1. `<artifact>`: `<specific uncertainty or follow-up that needs human review>`.
 
 ## Notes
 

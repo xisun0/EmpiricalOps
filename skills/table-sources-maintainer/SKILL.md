@@ -1,164 +1,164 @@
 ---
 name: table-sources-maintainer
-description: Maintain a research repo's figure/table source map from manuscript draft assets to LaTeX labels, repo sources, and owners. Use when updating or auditing files such as TABLE_SOURCES.md, tracing manuscript figures/tables, deciding whether to list filenames or full paths, splitting multi-panel table rows, linking manuscript commit hashes, or assigning owners from git history.
+description: Build, audit, reconcile, and update a research repo's figure/table source map from the active manuscript to paper-facing assets, LaTeX labels, code-side outputs, generators, owners, and open issues. Use for TABLE_SOURCES.md maintenance, full manuscript-to-source reconciliation, targeted source tracing, panel splitting, stale-row detection, manuscript commit links, and ownership attribution.
 ---
 
 # Table Sources Maintainer
 
 ## Goal
 
-Produce or update a source map that lets a future reader answer, for every manuscript figure/table: what draft asset is used, what LaTeX label refers to it, what repo file regenerates or explains it, who first introduced the paper-facing asset, and which open issues still track related work.
+Maintain a complete source map for every active manuscript figure and table. The active manuscript is the factual source for the artifact universe; an existing source map is prior state to reconcile, not an inventory to trust.
 
-Use `assets/TABLE_SOURCES.template.md` when creating a new file or when an existing source map needs normalization.
-Source maps should use front matter with `managed_by: table-sources-maintainer`, a plain-URL `maintainer_commit` value for the skill version used to maintain the file, and protected fields matching this skill's confirmation rules.
-Leave `maintainer_commit` empty until the maintainer skill is pinned to a committed revision.
+Use `assets/TABLE_SOURCES.template.md` when creating or normalizing a source map. Use the bundled scripts to rebuild the manuscript inventory and compare it with the existing map before making judgments.
 
 ## Canonical Source
 
 - Source of truth: `https://github.com/xisun0/EmpiricalOps/tree/main/skills/table-sources-maintainer`.
-- Repo-local copies may live under `.agents/skills/table-sources-maintainer`; before changing maintainer rules, check the source-of-truth repository above.
-- When filling `maintainer_commit` for a copied skill, use a pinned full-commit URL under the same EmpiricalOps skill path, not the downstream repo copy.
+- Repo-local copies may live under `.agents/skills/table-sources-maintainer`; inspect the canonical copy before changing maintainer rules.
+- Keep `maintainer_commit` empty while the skill has uncommitted edits or no pinned upstream revision. Once pinned, use a plain full-commit URL to the canonical skill folder.
 
-## Front Matter
+## Modes
 
-- `managed_by` must be `table-sources-maintainer`.
-- `maintainer_commit` records the Git commit for the maintainer skill version used in the latest maintenance pass.
-  Write it as a plain URL that points to the maintainer skill folder at the full commit hash, for example `https://github.com/<owner>/<repo>/tree/<full_hash>/skills/table-sources-maintainer`.
-  Do not use markdown-link syntax in front matter because YAML metadata parsers may reject or misread it.
-  This is the commit that defines the skill instructions, not the manuscript commit and not the source-map file commit.
-- If the skill is copied from a central operations repo, link to that central repo's skill folder at the pinned commit.
-  If the current skill has uncommitted edits or no pinned upstream commit, leave `maintainer_commit` empty and say so in the final response.
-- `protected_fields` must include fields that require human confirmation before changing.
+Choose scope and mutation independently.
 
-## Execution Workflow
+### Scope
 
-1. Locate the active manuscript.
-   Prefer the file named by the user. Otherwise inspect repo docs, the existing source map, recently edited manuscript files, and common manuscript directories such as `writing/`, `paper/`, `manuscript/`, or `draft/`.
-   Treat existing source-map `Draft:`, `Main source:`, and `Appendix source:` lines as the locked active-source mapping unless the user explicitly names a different source or repo documentation clearly marks another file as active.
-   Do not add, remove, split, or switch manuscript source files solely because another `.tex` file is newer, standalone, more complete, or contains additional tables/figures.
-   If a plausible alternative source is found, preserve the existing source mapping, record the ambiguity in `To Be Confirmed`, and ask for confirmation before remapping.
-2. Identify the git repo that owns the manuscript assets.
-   If the manuscript directory is a submodule, run commit and history commands inside that submodule.
-3. Record the manuscript source at the top of the source map.
-   Update the `Updated:` line to the current maintenance date and keep the date bolded.
-   Use a short displayed hash linked to the remote blob URL for the main source tex file at the full commit hash.
-   If one source file contains both main and appendix artifacts, use one `Draft:` line and state that this draft contains both main and appendix figures/tables.
-   If main tables/figures and appendix tables/figures come from separate source files, define both `Main source` and `Appendix source` at the top.
-4. Extract figures and tables from the manuscript in order.
-   Use separate `Main Figures and Tables` and `Appendix Figures and Tables` sections by default.
-   Omit the appendix section only when the manuscript has no appendix figures or tables.
-5. Fill one row per artifact or per panel, using the column rules below.
-6. Verify duplicate draft-asset filenames before shortening paths.
-7. Before changing any existing `owner` or `related open issues` value, including `TBD` or `-`, get explicit human confirmation.
-   Add or correct other cells directly when the evidence is clear, preserve any manual owner correction from the user, and preserve issue-link decisions unless the user confirms a change.
-8. Add or update a `To Be Confirmed` section for unresolved source-map risks that need human review.
-   Use it for ambiguity that affects interpretation or maintenance, such as unresolved generators, inlined/manual tables with unclear ownership, missing active labels, or source chains that look plausible but are not verified.
-   Do not use it to duplicate every routine `TBD` cell.
-9. Keep `Notes` as the final section of the source map.
-10. Fill `maintainer_commit` only when the maintainer skill version is pinned to a committed revision.
-    Use a plain URL to the maintainer skill folder at that commit; otherwise leave it empty.
-11. Run `git diff --check -- <source-map-file>` after edits.
-    Do not compile LaTeX unless manuscript LaTeX sources or assets changed.
+- `full-reconcile`: default for requests to audit, maintain, refresh, synchronize, or check the current source map. Rebuild the complete active artifact inventory and revalidate every active row.
+- `targeted-update`: use only when the user explicitly limits work to named artifacts. Still rebuild the complete inventory and report drift outside the target; only deep-trace and edit the named rows.
+- `bootstrap`: use when no source map exists.
+
+### Mutation
+
+- `audit-only`: report findings without editing.
+- `update`: edit the source map. Do not edit manuscript assets or replication code unless separately requested.
+
+### Defaults
+
+- Scope defaults to `full-reconcile`. Use `targeted-update` only when the user explicitly limits the work to named artifacts, and use `bootstrap` only when no source map exists.
+- Mutation defaults to `audit-only` for requests to audit, check, inspect, or review a source map.
+- Mutation defaults to `update` for requests to maintain, update, refresh, synchronize, reconcile, create, or fix a source map.
+- An explicit user instruction overrides these defaults. Record both dimensions as `<scope> + <mutation>`.
+
+## Required Workflow
+
+1. **Lock the active manuscript path.**
+   Prefer the user's named file, then explicit repo documentation, then the existing map. Preserve an existing `Draft:`, `Main source:`, or `Appendix source:` selection unless the user or clear repo documentation identifies a replacement. Locking the source path does not lock the existing artifact rows.
+
+2. **Identify ownership boundaries.**
+   Determine which Git repo or submodule owns the manuscript and paper-facing assets. Run history commands in that repo.
+
+3. **Rebuild a fresh artifact inventory.**
+   Run:
+
+   ```bash
+   python3 .agents/skills/table-sources-maintainer/scripts/inventory_manuscript_artifacts.py \
+     --manuscript <active.tex> --aux <active.aux> --output <inventory.json>
+   ```
+
+   Derive the inventory independently of `TABLE_SOURCES.md`. Include active table and figure environments in manuscript order, main/appendix location, labels, captions, direct and wrapper-based table inputs, figure assets, inline bodies, continued floats, and source lines. Exclude commented-out material. Treat unresolved macros or inputs as audit blockers, not as absent artifacts.
+
+4. **Run a bidirectional reconciliation.**
+   Run:
+
+   ```bash
+   python3 .agents/skills/table-sources-maintainer/scripts/reconcile_source_map.py \
+     --inventory <inventory.json> --source-map <TABLE_SOURCES.md>
+   ```
+
+   Classify every difference as `missing_from_map`, `stale_in_map`, `mapping_changed`, or `unchanged`. Check labels and active draft-asset usages in both directions.
+
+5. **Normalize logical artifacts and panels.**
+   Follow manuscript numbering from the current `.aux` when available. Merge continued floats into the same logical table. Split a table or figure into panel rows when separate substantive assets or generators need separate tracing. Preserve wrapper and panel labels together when both matter.
+
+6. **Trace every active source chain.**
+   Trace `manuscript wrapper -> draft asset -> code-side output -> generator`. Search label-derived filenames, exact asset basenames, generator output statements, nearby run scripts, and source-map documentation. Classify each chain as:
+   - `verified`: exact active asset and generator/output link found;
+   - `manual`: intentionally assembled or maintained by hand, with inputs stated;
+   - `candidate`: plausible source found but exact generation link not established;
+   - `unresolved`: no defensible source chain.
+
+   Do not present `candidate` as verified. Put material candidate or unresolved chains in `To Be Confirmed`.
+
+7. **Reconcile protected fields by artifact identity.**
+   Match rows by active label and draft asset, not old row number. Preserve existing `owner` and `related open issues` values when an artifact is renumbered, moved, or split. Before changing an existing active artifact's protected value, including `TBD` or `-`, obtain explicit human confirmation. Removing a row proven inactive is not a protected-field edit; report the removal. For new rows, fill protected fields only from clear evidence, otherwise use `TBD` or `-`.
+
+8. **Update map metadata and sections.**
+   Record the current manuscript commit, current date, scope and mutation mode, and coverage counts. Keep separate main and appendix sections when both exist. Keep `Notes` last. Number every `To Be Confirmed` item.
+
+9. **Apply the completion gate.**
+   Do not report a full reconciliation as complete unless:
+   - every active top-level table and figure label is mapped;
+   - every active draft asset usage is mapped or explicitly represented by an inline/manual row;
+   - no stale row remains without an explicit reason;
+   - every row has all required columns and a source-chain classification, including unresolved;
+   - coverage counts equal the fresh inventory after continued-float and panel normalization;
+   - all remaining ambiguities appear in `To Be Confirmed`.
+
+10. **Validate the edit.**
+    Re-run reconciliation until it reports no missing or stale labels/assets. Run `git diff --check -- <source-map-file>`. Do not compile LaTeX unless manuscript LaTeX or assets changed.
 
 ## Required Columns
-
-Use these columns unless the existing repo has a better established naming convention:
 
 ```md
 | No. | LaTeX label | draft asset | repo source | owner | related open issues |
 |---|---|---|---|---|---|
 ```
 
+Use an established equivalent only when the repository already has one.
+
 ## Column Rules
 
 ### No.
 
-- Follow the manuscript numbering and order.
-- Use panel rows when separate source assets are used, for example `Table 7 Panel A` and `Table 7 Panel B`.
-- Preserve the repo's appendix naming style, such as `Appendix Table A1`, `IA Table 1`, or `Figure A1`.
-
-### draft asset
-
-- Record the core figure or table file used by the current manuscript draft.
-- For figures, list the actual image file included in the draft, such as `.png` or `.pdf`.
-  Do not list wrapper `.tex` files whose only role is to insert an image.
-- For tables, list the paper-facing manuscript table fragment, usually a `.tex` file.
-- For inlined tables, write `inlined in manuscript source` when one source contains both main and appendix artifacts.
-  If main and appendix are separate sources, write `inlined in main source` or `inlined in appendix source`.
-  Inline status only describes how the table appears in the manuscript; it does not imply that the repo source is unknown.
-- For readability, write only filenames in this column after checking for duplicate basenames.
-- If any draft-asset basename is duplicated, keep the full path for the duplicated filename and tell the user which basename was duplicated.
-- If one figure number contains multiple substantive image assets, keep one row only when the manuscript treats them as one combined figure; otherwise split into panel rows.
+- Follow current manuscript numbering and order.
+- Preserve the manuscript's appendix naming style.
+- Use panel rows when separate substantive assets or source chains are used.
 
 ### LaTeX label
 
-- Record the active manuscript label, such as `fig:<label>` or `tab:<label>`.
-- If a wrapper label and panel labels both matter, keep them in one cell, for example `tab:<wrapper>` (`tab:<panel_a>`).
-- If no active label exists, write `no active label`.
+- Record active labels only.
+- Keep wrapper and panel labels in one cell when both identify the artifact.
+- Write `no active label` only when an active environment genuinely lacks a label.
+
+### draft asset
+
+- For figures, record actual included image assets, not wrapper files.
+- For tables, record active paper-facing table fragments.
+- For inline tables, write `inlined in manuscript source`, `inlined in main source`, or `inlined in appendix source`.
+- Use filenames only after checking duplicate basenames. Retain paths for duplicated basenames.
 
 ### repo source
 
-- Record the repo file that can reproduce or explain the draft asset.
-- Apply the same rule to figures and tables.
-- If the maintained repo source artifact has the same basename as the draft asset, do not repeat the artifact path in `repo source`.
-  Write the generator directly when known, for example `code/.../script.do`.
-- If the maintained repo source artifact has a different basename from the draft asset, write the source artifact followed by the generator when known, for example `code/.../source_table.tex`, generated by `code/.../script.do`.
-- If the same-basename source directory is known but the generator is unknown, write `same filename in code/.../; generator TBD`.
-- If no source artifact exists, list the generating script when known.
-- For inlined tables, search for a code-side source artifact before writing `source not yet located`.
-  Derive candidate filenames from the LaTeX label by stripping the prefix, for example `tab:CN_2digit_favind_ols` -> `CN_2digit_favind_ols.tex`, and also try common numeric prefixes such as `2_CN_2digit_favind_ols.tex`.
-  Search repo code/output directories for those filenames and for likely generator calls.
-  If the inlined table contains multiple panels with separate code-side artifacts, split the source map into panel rows even though the manuscript block is inlined.
-- For manual tables or screenshots, say so directly, for example `manual table in manuscript; no separate source file`.
-- Use `TBD` when neither source nor generator is clear.
+- Record the code-side output and generator when their basename differs from the draft asset.
+- When an exact same-basename code-side output is verified, list the generator directly.
+- For manually assembled assets, name component outputs and the formatter or assembly step.
+- Prefix an unverified but plausible chain with `candidate:` and add it to `To Be Confirmed`.
+- Use `TBD` when no defensible source or generator is found.
 
 ### owner
 
-- `owner` is the first git author who added the paper-facing manuscript asset.
-- For image figures, use the core image asset, not a wrapper tex.
-- For table fragments, use the paper-facing table fragment.
-- For inlined manuscript tables, use the first author who added the relevant manuscript block when known.
-- Do not substitute the code-side generator author unless the user explicitly asks for code owner.
-- If the user provides an explicit owner correction, preserve that manual owner and do not overwrite it from git history.
-- Use `TBD` when ownership cannot be assigned cleanly from git history.
+- Owner is the first Git author who added the paper-facing asset, not the generator author.
+- For inline artifacts, use the first author of the manuscript block when recoverable.
+- Preserve explicit human corrections.
+- Use:
 
-Run this from the repo that owns the paper-facing asset:
-
-```bash
-git -C <asset-repo-or-submodule> log --follow --diff-filter=A --format='%ad\t%an\t%H' --date=short -- <path-inside-that-repo>
-```
+  ```bash
+  git -C <asset-repo-or-submodule> log --follow --diff-filter=A \
+    --format='%ad\t%an\t%H' --date=short -- <asset-path>
+  ```
 
 ### related open issues
 
-- Record currently open issue links that directly track the artifact, its data source, specification, generator, or unresolved validation question.
-- Use issue links, for example `[#107](https://github.com/<owner>/<repo>/issues/107)`.
-- Use `-` when no clearly related open issue exists.
-- Do not attach broad or weakly related issues just to fill the cell.
-- If issue lookup fails, fill only issues already known from local context and tell the user that the column is incomplete.
+- Include only currently open issues directly tied to the artifact, source, specification, or unresolved validation.
+- Use `-` when no clearly related open issue is known.
+- If issue lookup is unavailable, preserve existing values and report that verification is incomplete.
 
-## Checks
+## Front Matter
 
-Before finishing:
-
-- Confirm every row has the required columns.
-- Confirm manuscript source mapping was not changed from existing `Draft:`, `Main source:`, or `Appendix source:` lines without explicit user direction, clear repo documentation, or a recorded confirmation.
-- Confirm every listed draft asset exists, or is explicitly marked as inlined.
-- Confirm draft-asset filenames were shortened only after checking duplicate basenames.
-- Confirm figure rows list core image assets, not wrapper tex files.
-- Confirm multi-panel tables with separate table fragments are split into panel rows.
-- Confirm inlined tables were still searched for code-side source artifacts using label-derived filenames and generator references.
-- Confirm `repo source` follows the unified same-basename rule for figures and tables.
-- Confirm owner attribution comes from paper-facing asset history.
-- Confirm related open issues are open and directly related, or use `-`.
-- Confirm every changed existing `owner` or `related open issues` value, including `TBD` or `-`, was explicitly confirmed by the user.
-- Confirm the `To Be Confirmed` section records the remaining high-risk ambiguities without duplicating every routine `TBD` cell.
-- Confirm `Notes` is the final section.
-- Run `git diff --check -- <source-map-file>`.
+- `managed_by` must be `table-sources-maintainer`.
+- `maintainer_commit` must be a plain URL to the canonical skill folder at a full commit hash, or empty when the skill is unpinned.
+- `protected_fields` must include `owner` and `related open issues` unless the repository explicitly defines different protected fields.
 
 ## Completion Response
 
-When finishing a source-map update or audit, include the current `To Be Confirmed` items in the final response.
-If the section is empty, say that there are no current `To Be Confirmed` items.
-Keep the list concise, but do not omit items that remain in the source map.
-Also state whether `maintainer_commit` was filled or intentionally left empty.
-If filled, state which repo and folder the URL points to.
+Report mode, active manuscript commit, fresh inventory counts, reconciliation result, changed rows, source-chain status, all numbered `To Be Confirmed` items, `maintainer_commit` status, and validation results.
