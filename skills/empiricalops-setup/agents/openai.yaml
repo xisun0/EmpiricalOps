@@ -1,0 +1,4 @@
+interface:
+  display_name: "EmpiricalOps Setup"
+  short_description: "Configure empirical repos and install skills"
+  default_prompt: "Use $empiricalops-setup to configure this research repository and recommend EmpiricalOps skills."

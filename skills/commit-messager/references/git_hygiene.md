@@ -49,6 +49,19 @@ Avoid:
 - New synonyms for an existing scope
 - `repo` when a specific scope is defensible
 
+## Pull Request Merge Strategy
+
+Use **Squash and merge** by default. Feature branches often contain exploratory,
+corrective, and cleanup commits that should not enter the target branch
+individually.
+
+Write the squash commit message to describe the final net change rather than the
+branch's development history.
+
+Use a merge commit or rebase merge only when project-local guidance or the user
+explicitly requires preserving individual commits or branch topology. Project-local
+guidance takes precedence over this default.
+
 ## Body Sections
 
 Use body sections only when they add useful context beyond the subject.

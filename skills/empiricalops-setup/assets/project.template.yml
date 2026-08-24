@@ -1,0 +1,33 @@
+schema_version: 1
+
+project:
+  kind: null
+
+install:
+  scope: null
+
+git:
+  base_branch: null
+  merge_strategy: null
+  commit_style: null
+  identity:
+    mode: inherit
+    name: null
+    email: null
+
+writing:
+  mode: null
+  path: null
+  merge_before_parent: null
+
+outputs:
+  exploratory_policy: null
+
+data:
+  restricted_policy: null
+  external_root: null
+
+empirics:
+  default_winsorization: null
+  default_fixed_effects: null
+  default_clustering: null

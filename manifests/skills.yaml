@@ -1,4 +1,7 @@
 skills:
+  empiricalops-setup:
+    path: skills/empiricalops-setup
+    import_method: native
   commit-messager:
     path: skills/commit-messager
     source_repo: git@github.com:xisun0/commit-messager.git
