@@ -48,6 +48,11 @@ empirics:
   default_winsorization: null
   default_fixed_effects: null
   default_clustering: null
+
+reflection:
+  activation: null        # explicit | suggest_after_complex_task
+  public_repo: null
+  save_local_reports: false
 ```
 
 ## Source Metadata

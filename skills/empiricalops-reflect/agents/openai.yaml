@@ -1,0 +1,4 @@
+interface:
+  display_name: "EmpiricalOps Reflect"
+  short_description: "Route session lessons into durable improvements"
+  default_prompt: "Use $empiricalops-reflect to turn this session into scoped improvement proposals."

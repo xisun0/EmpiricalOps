@@ -31,3 +31,8 @@ empirics:
   default_winsorization: null
   default_fixed_effects: null
   default_clustering: null
+
+reflection:
+  activation: null
+  public_repo: null
+  save_local_reports: false

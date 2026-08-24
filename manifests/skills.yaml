@@ -2,6 +2,14 @@ skills:
   empiricalops-setup:
     path: skills/empiricalops-setup
     import_method: native
+  empiricalops-reflect:
+    path: skills/empiricalops-reflect
+    import_method: native
+    capabilities:
+      - workflow_reflection
+      - improvement_routing
+    dependencies: []
+    setup_manifest: setup.yml
   commit-messager:
     path: skills/commit-messager
     source_repo: git@github.com:xisun0/commit-messager.git

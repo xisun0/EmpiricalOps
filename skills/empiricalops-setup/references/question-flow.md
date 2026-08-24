@@ -31,6 +31,9 @@ Use stable IDs so answers can be reused by multiple skills.
 | `data.restricted_policy` | Where do licensed, confidential, or large inputs live? | Required before generating data guidance |
 | `empirics.default_winsorization` | Default winsorization rule? | Optional; no universal value |
 | `empirics.default_clustering` | Default clustering convention? | Optional; do not infer from one table |
+| `reflection.activation` | When should session reflection be suggested? | Recommend explicit invocation |
+| `reflection.public_repo` | Where should owner-level workflow improvements be proposed? | Recommend the public EmpiricalOps repo |
+| `reflection.save_local_reports` | Save reflection proposals automatically? | Recommend `false` |
 
 Do not ask every question mechanically. Skip irrelevant items and reuse confirmed values already stored in the project profile.
 
@@ -44,6 +47,7 @@ Ask what the user does, rather than asking them to recognize skill names. Candid
 - Are GitHub issues used as empirical decision records?
 - Does the project require literature discovery and bibliography integration?
 - Are writing and code released through separate repositories?
+- Should completed complex workflows produce a scoped improvement proposal?
 
 Map affirmative workflows to catalog capabilities, then present Required, Recommended, and Optional skills with one-sentence reasons.
 

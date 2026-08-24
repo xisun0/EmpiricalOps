@@ -1,0 +1,34 @@
+schema_version: 1
+
+questions:
+  - id: reflection.activation
+    prompt: When should EmpiricalOps reflection be suggested?
+    type: choice
+    options:
+      - explicit
+      - suggest_after_complex_task
+    recommended: explicit
+    required: true
+    scope: project
+
+  - id: reflection.public_repo
+    prompt: Which public repository should receive owner-level workflow improvements?
+    type: string
+    recommended: https://github.com/xisun0/EmpiricalOps
+    required: true
+    scope: user
+
+  - id: reflection.save_local_reports
+    prompt: Should reflection proposals be saved automatically in the project?
+    type: boolean
+    recommended: false
+    required: true
+    scope: project
+
+validation:
+  - type: resolved_question
+    id: reflection.activation
+  - type: resolved_question
+    id: reflection.public_repo
+  - type: resolved_question
+    id: reflection.save_local_reports
