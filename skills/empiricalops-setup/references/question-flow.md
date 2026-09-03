@@ -26,6 +26,7 @@ Use stable IDs so answers can be reused by multiple skills.
 | `git.identity.name` | Dedicated commit name? | Ask only when mode is `dedicated` |
 | `git.identity.email` | Dedicated commit email? | Ask only when mode is `dedicated` |
 | `git.commit_style` | Commit subject convention? | Suggest detected convention |
+| `git.scopes` | Which small, stable vocabulary classifies commit areas? | Propose from research domains and shared operations; require confirmation when commit hygiene is configured |
 | `writing.mode` | Same repo, submodule, or separate repo? | Prefer detected structure |
 | `outputs.exploratory_policy` | Keep exploratory artifacts in target branches? | Recommend PR history or archive only |
 | `data.restricted_policy` | Where do licensed, confidential, or large inputs live? | Required before generating data guidance |
@@ -36,6 +37,20 @@ Use stable IDs so answers can be reused by multiple skills.
 | `reflection.save_local_reports` | Save reflection proposals automatically? | Recommend `false` |
 
 Do not ask every question mechanically. Skip irrelevant items and reuse confirmed values already stored in the project profile.
+
+## Confirmation Protocol
+
+Before treating answers as confirmed, show exactly the unresolved IDs and proposed values, for example:
+
+```text
+git.base_branch = dev
+git.merge_strategy = squash
+git.scopes = [policy, assetpricing, ops]
+```
+
+A short confirmation applies only to the displayed entries. Do not carry it to omitted questions. After each confirmation, update the decision ledger and state which required IDs remain unresolved.
+
+When proposing scopes, prefer a small vocabulary based on durable research domains plus one shared operations scope. Do not default to programming languages, file extensions, or a scope for every directory.
 
 ## 3. Capability Interview
 
@@ -62,6 +77,8 @@ After the user approves the skill plan, read each selected package's `setup.yml`
 5. Ask remaining questions grouped by skill, normally no more than three at a time.
 6. Show the resulting file changes before applying them.
 
+The setup orchestrator, not the selected skill, renders and patches declared outputs.
+
 ## 5. Completion Receipt
 
 Report:
@@ -72,4 +89,4 @@ Report:
 - declined and deferred recommendations
 - validation results and unresolved required decisions
 
-An unresolved required decision is a setup blocker, not permission to insert a sample value.
+An unresolved required decision or missing required output yields `profile_draft`, not `setup_complete`.

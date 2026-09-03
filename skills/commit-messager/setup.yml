@@ -1,0 +1,52 @@
+schema_version: 1
+
+questions:
+  - id: git.base_branch
+    prompt: Which branch receives completed work?
+    type: string
+    required: true
+    scope: project
+  - id: git.merge_strategy
+    prompt: What is the default pull-request merge strategy?
+    type: choice
+    options: [squash, merge, rebase]
+    recommended: squash
+    required: true
+    scope: project
+  - id: git.commit_style
+    prompt: Which commit subject convention should the project use?
+    type: string
+    recommended: angular
+    required: true
+    scope: project
+  - id: git.scopes
+    prompt: Which small, stable vocabulary should classify commit areas?
+    type: string_list
+    required: true
+    scope: project
+  - id: git.identity.mode
+    prompt: Should commits inherit the configured identity or use a dedicated identity?
+    type: choice
+    options: [inherit, dedicated]
+    recommended: inherit
+    required: true
+    scope: project
+
+outputs:
+  - target: GIT_HYGIENE.md
+    mode: managed_section
+    template: assets/git-hygiene-section.md
+  - target: AGENTS.md
+    mode: managed_section
+    template: assets/agents-routing-section.md
+
+validation:
+  - type: resolved_questions
+    ids:
+      - git.base_branch
+      - git.merge_strategy
+      - git.commit_style
+      - git.scopes
+      - git.identity.mode
+  - type: agent_guidance_route
+    target: GIT_HYGIENE.md

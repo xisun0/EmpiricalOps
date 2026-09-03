@@ -27,6 +27,7 @@ git:
   base_branch: null
   merge_strategy: null    # squash | merge | rebase
   commit_style: null
+  scopes: null            # confirmed non-empty list when commit hygiene is configured
   identity:
     mode: inherit         # inherit | dedicated
     name: null            # required only for dedicated
@@ -75,6 +76,16 @@ proposals:
     value: dev
     source: detected
 ```
+
+## Completion Semantics
+
+Installation state and configuration state are independent. Derive rather than guess the final status:
+
+- `skills_installed`: installed folders match a pinned lockfile.
+- `profile_draft`: required answers or managed outputs are missing.
+- `setup_complete`: `scripts/validate_project_setup.py` passes.
+
+Optional empirical defaults may remain `null` intentionally. Required fields and conditional requirements are enforced by the validator.
 
 ## Git Identity
 

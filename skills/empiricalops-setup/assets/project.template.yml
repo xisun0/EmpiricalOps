@@ -10,6 +10,7 @@ git:
   base_branch: null
   merge_strategy: null
   commit_style: null
+  scopes: null
   identity:
     mode: inherit
     name: null
