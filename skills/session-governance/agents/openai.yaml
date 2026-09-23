@@ -1,0 +1,3 @@
+interface:
+  display_name: "Session Governance"
+  short_description: "Review and clean up Codex tasks safely"

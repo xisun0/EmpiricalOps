@@ -32,3 +32,6 @@ skills:
     path: skills/consistency-auditor
     import_method: native
     dependencies: []
+  session-governance:
+    path: skills/session-governance
+    import_method: native
