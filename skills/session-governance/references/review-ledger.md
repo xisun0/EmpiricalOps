@@ -1,6 +1,6 @@
 # Session review report
 
-Begin with: `审查范围：<project/date range>；本地用户会话 <n> 个；排除系统记录 <n> 个；已自动规范标题 <n> 个。`
+Begin with: `审查范围：<project/date range>；未归档本地用户会话 <n> 个；排除系统记录 <n> 个；已自动规范标题 <n> 个。`
 
 Put every reviewed user task in exactly one of the following groups. In each table, use only `原标题`、`现标题`、`原因`. Do not display task IDs unless titles are duplicated, the user requests IDs, or an ID is needed to disambiguate a permanent-deletion confirmation. `现标题` is the title after automatic normalization; repeat the original title when it was retained.
 
